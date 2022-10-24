@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+body {
+  background: url(\src\assets\casteloroxo.png);
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 450px;
+  position: relative;
+  left: 50%;
+  margin-left: -250px;
+  margin-top: 50px;
+  background-clip: padding-box;
+  background:rgba(255, 255, 255, 0.664);
+  border: 1px solid rgba(255, 253, 253, 0.377);
+  border-radius: 0.8rem;
+  outline: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center
+}
+
+h3 {
+  font-size: 200%;
+  font-family: 'Righteous', cursive;
+}
+
+a {
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  color: black;
+}
+
+.mat-form-pass {
+  width: 400px;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #6253e1;
+}
+
+::ng-deep .mat-form-field-invalid.mat-form-field-invalid{
+  color: red;
+}
+
+.botao {
+  width: 200px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  height: 50px;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+  border-radius: 50px;
+}
+
+.botao:focus {
+  outline: none;
+}
+
+.botao.bt2 {
+  background-image: linear-gradient(
+    to right,
+    #6253e1,
+    #852d91,
+    #a3a1ff,
+    #f24645
+  );
+  box-shadow: 0 4px 15px 0 rgba(126, 52, 161, 0.75);
+}

@@ -1,0 +1,77 @@
+<body>
+  <form class="container px-4 py-3">
+      <h3 class="text-black">Register</h3>
+      <div>
+        <mat-form-field class="mat-form-pass" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input [(ngModel)]="user.name" type="name" matInput [formControl]="nullFormControl" [errorStateMatcher]="matcher"
+                 placeholder="Ex. Caroliny Rodrigues">
+          <mat-error *ngIf="nullFormControl.hasError('required')">
+            Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="mat-form-pass" appearance="outline">
+          <mat-label>Enter your email</mat-label>
+          <input [(ngModel)]="user.email" matInput type="email" id="floatingInput"
+          placeholder="name@example.com" required pattern="^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$" [formControl]="email">
+          <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+          <mat-form-field class="mat-form-pass" appearance="outline">
+            <mat-label>Enter your password</mat-label>
+          <input [(ngModel)]="user.password" matInput [type]="hide ? 'password' : 'text'">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div>
+        <button type="submit" class="button bt2" (click)="onSubmit()">Send</button>
+      </div>
+      <div>
+        <a routerLink="/signup">Do you have an account? Login</a>
+      </div>
+  </form>
+</body><body>
+  <form class="container px-4 py-3">
+      <h3 class="text-black">Register</h3>
+      <div>
+        <mat-form-field class="mat-form-pass" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input [(ngModel)]="user.name" type="name" matInput [formControl]="nullFormControl" [errorStateMatcher]="matcher"
+                 placeholder="Ex. Caroliny Rodrigues">
+          <mat-error *ngIf="nullFormControl.hasError('required')">
+            Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="mat-form-pass" appearance="outline">
+          <mat-label>Enter your email</mat-label>
+          <input [(ngModel)]="user.email" matInput type="email" id="floatingInput"
+          placeholder="name@example.com" required pattern="^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$" [formControl]="email">
+          <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+          <mat-form-field class="mat-form-pass" appearance="outline">
+            <mat-label>Enter your password</mat-label>
+          <input [(ngModel)]="user.password" matInput [type]="hide ? 'password' : 'text'">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div>
+        <button type="submit" class="botao bt2" (click)="onSubmit()">Send</button>
+      </div>
+      <div>
+        <a routerLink="/signup">Do you have an account? Login</a>
+      </div>
+  </form>
+</body>
