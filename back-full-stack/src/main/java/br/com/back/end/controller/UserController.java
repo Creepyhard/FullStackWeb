@@ -2,6 +2,7 @@ package br.com.back.end.controller;
 
 import java.util.List;
 
+import br.com.back.end.model.transactions.StatusTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -50,8 +51,18 @@ public class UserController {
 		return userService.attUserService(id, userDetails);
 	}
 	
+//	@PostMapping("/login")
+//	private User loginUserRemote(@RequestBody User user){
+//		return userService.loginUserService(user);
+//	}
+
+	@PostMapping(path = {"/{schedulePayment}"})
+	private StatusTransaction schedulePayment(@RequestBody User user) {
+		return userService.schedulePaymentService(user);
+	}
+
 	@PostMapping("/login")
-	private User loginUserRemote(@RequestBody User user){
+	private int loginUserRemote(@RequestBody User user){
 		return userService.loginUserService(user);
 	}
 }

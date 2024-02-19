@@ -1,0 +1,25 @@
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "birth_date": "28-01-2004",
+  "email": "diego@gmail.com",
+  "name": "Diego ",
+  "cpf": "12346578944",
+  "password": "123"
+}
+
+###
+#{
+#  "birth_date": "28-03-2004",
+#  "email": "nay@gmail.com",
+#  "name": "Nay ",
+#  "cpf": "9876543144",
+#  "password": "654"
+#}{
+#  "birth_date": "28-01-2004",
+#  "email": "diego@gmail.com",
+#  "name": "Diego ",
+#  "cpf": "12346578944",
+#  "password": "123"
+#}
