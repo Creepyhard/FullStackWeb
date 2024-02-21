@@ -2,6 +2,7 @@ package br.com.back.end.controller;
 
 import java.util.List;
 
+import br.com.back.end.DTO.UserDTO;
 import br.com.back.end.model.transactions.StatusTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,17 @@ public class UserController {
 		
 	@Autowired
 	private UserService userService;
-	
+
+//	@GetMapping
+//	public List<User> getUsers() {
+//		return userService.getAllUsers();
+//	}
+
 	@GetMapping
-	public List<User> getUsers() {
+	public List<UserDTO> getUsers() {
 		return userService.getAllUsers();
 	}
-	
+
 	@GetMapping(path = {"/{id}"})
 	public ResponseEntity<User> getUserId(@PathVariable long id) {
 		return userService.findIdService(id);
@@ -62,7 +68,7 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	private int loginUserRemote(@RequestBody User user){
+	private User loginUserRemote(@RequestBody User user){
 		return userService.loginUserService(user);
 	}
 }

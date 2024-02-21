@@ -26,22 +26,12 @@ export class LoginComponent implements OnInit {
   }
   ngOnInit() {
   }
-  //recomendado
+
   Login() {
     this.userService.loginUserRemote(this.user).subscribe({
       error(err) {console.log("Error")},
-      complete: () => console.log("Valid")}
+      next: () => {console.log("Valid")},
+      complete: () => this.router.navigate(["/home"])}
     )
   }
-  //antigo
-  /*fazerLogin() {
-   this.service.loginUsuarioRemoto(this.usuario).subscribe(
-     data => {
-       this.router.navigate(["/deleteuser"])
-     } ,
-     error => {
-       this.msg="Email ou senha invalidos";
-     }
-   )
-  }*/
 }

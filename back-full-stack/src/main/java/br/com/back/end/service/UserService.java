@@ -3,8 +3,11 @@ package br.com.back.end.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import br.com.back.end.DTO.UserDTO;
+import br.com.back.end.DTO.mapper.UserMapper;
 import br.com.back.end.model.transactions.HistoryTransactions;
 import br.com.back.end.model.transactions.StatusTransaction;
 import br.com.back.end.model.transactions.TaxTransfer;
@@ -26,15 +29,20 @@ public class UserService {
 
 	private final HistoryTransactionsRepository historyTransactionsRepository;
 
-	public UserService(UserRepository userRepository, HistoryTransactionsRepository historyTransactionsRepository) {
+	private final UserMapper userMapper;
+	public UserService(UserRepository userRepository, HistoryTransactionsRepository historyTransactionsRepository, UserMapper userMapper) {
 		this.userRepository = userRepository;
 		this.historyTransactionsRepository = historyTransactionsRepository;
+		this.userMapper = userMapper;
 	}
 
-	public List<User> getAllUsers() {
-		return userRepository.findAll();
+//	public List<User> getAllUsers() {
+//		return userRepository.findAll();
+//	}
+
+	public List<UserDTO> getAllUsers() {
+		return userRepository.findAll().stream().map(userMapper::convertUserToDTO).collect(Collectors.toList());
 	}
-	
 	public User addUserService(User user) {
 		user.setNumberCC(user.getNumberAccount());
 		user.setDigitNumberCC("1");
@@ -78,18 +86,21 @@ public class UserService {
 		}
 	}
 	
-	public int loginUserService(@RequestBody User user) throws UserNotFoundException {
+	public User loginUserService(@RequestBody User user) throws UserNotFoundException {
 		String emailT = user.getEmail();
 		String passwordT = user.getPassword();
-		int userObject = 0;
+		User userObject = new User();
+		BCrypt.Result result = null;
 		if(emailT != null && passwordT != null) {
-			userObject = userRepository.findEmailPasswordsUser(emailT, passwordT);
+			userObject = userRepository.findEmailPasswordsTest(emailT);
+			result = BCrypt.verifyer().verify(passwordT.toCharArray(), userObject.getPassword());
 		}
-		if(userObject == 0) {
-			throw new UserNotFoundException();
-		}
-		return userObject;
-	}
+        if (!result.verified || !userObject.getEmail().equals(emailT)) {
+            throw new UserNotFoundException();
+        } else {
+            return userObject;
+        }
+    }
 
 	public StatusTransaction schedulePaymentService(User transaction) {
 		User destionationUser = new User();

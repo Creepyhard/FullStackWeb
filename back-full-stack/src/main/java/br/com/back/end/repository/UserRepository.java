@@ -11,8 +11,11 @@ import br.com.back.end.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	@Query(nativeQuery = true, value = "select count(*) from user u where u.email = :email and u.password = :password")
-	public int findEmailPasswordsUser(@Param("email") String emailT, @Param("password") String passwT);
+	@Query("SELECT u.email, u.password from User u where u.email = :email and u.password = :password")
+	public User findEmailPasswordsUser(@Param("email") String emailT, @Param("password") String passwT);
+
+	@Query("SELECT u from User u where u.email = :email")
+	public User findEmailPasswordsTest(@Param("email") String emailT);
 
 	@Query("SELECT tt FROM TaxTransfer tt WHERE tt.homeDay <= :qtdDay and tt.finalDay >= :qtdDay")
 	public TaxTransfer returnsRateReferentToDay(@Param("qtdDay") int qtdDay);
