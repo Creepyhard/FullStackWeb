@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping(value = "/history")
 public class HistoryTransactionController {
 
-    private HistoryTransactionsService historyTransactionsService;
+    private final HistoryTransactionsService historyTransactionsService;
 
     public HistoryTransactionController(HistoryTransactionsService historyTransactionsService) {
         this.historyTransactionsService = historyTransactionsService;

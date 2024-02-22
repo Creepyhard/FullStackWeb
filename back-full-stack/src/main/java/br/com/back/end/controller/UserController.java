@@ -27,23 +27,18 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-//	@GetMapping
-//	public List<User> getUsers() {
-//		return userService.getAllUsers();
-//	}
-
 	@GetMapping
 	public List<UserDTO> getUsers() {
 		return userService.getAllUsers();
 	}
 
 	@GetMapping(path = {"/{id}"})
-	public ResponseEntity<User> getUserId(@PathVariable long id) {
+	public UserDTO getUserId(@PathVariable long id) {
 		return userService.findIdService(id);
 	}
 	
 	@PostMapping
-	public User addUser(@RequestBody User user) {
+	public UserDTO addUser(@RequestBody User user) {
 		return userService.addUserService(user);
 	}
 	
@@ -53,22 +48,17 @@ public class UserController {
 	}
 	
 	@PutMapping({"/{id}"})
-	public ResponseEntity<User> attUser(@PathVariable Long id, @RequestBody User userDetails){
+	public ResponseEntity<UserDTO> attUser(@PathVariable Long id, @RequestBody UserDTO userDetails){
 		return userService.attUserService(id, userDetails);
 	}
 	
-//	@PostMapping("/login")
-//	private User loginUserRemote(@RequestBody User user){
-//		return userService.loginUserService(user);
-//	}
-
 	@PostMapping(path = {"/{schedulePayment}"})
 	private StatusTransaction schedulePayment(@RequestBody User user) {
 		return userService.schedulePaymentService(user);
 	}
 
 	@PostMapping("/login")
-	private User loginUserRemote(@RequestBody User user){
+	private UserDTO loginUserRemote(@RequestBody User user){
 		return userService.loginUserService(user);
 	}
 }

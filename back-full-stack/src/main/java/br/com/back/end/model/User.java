@@ -12,7 +12,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
@@ -30,15 +33,19 @@ public class User {
 	private Timestamp alteration;
 	@Column
 	private Timestamp userAlteration;
+	@NotNull @NotBlank @Length(min = 3, max = 20)
 	@Column(nullable = false)
 	private String name;
 	@Column
 	private String nickname;
+	@NotNull @NotBlank @Length(min = 12, max = 256)
 	@Column(nullable = false, unique = true)
 	private String email;
+	@NotNull @NotBlank @Length(min = 8, max = 60)
 	@Column(nullable = false)
 	private String password;
-	@Column(unique = true)
+	@Length(min = 11, max = 11)
+	@Column(unique = true, length = 11)
 	private String cpf;
 	@Column(unique = true)
 	private String numberCC;
@@ -66,6 +73,10 @@ public class User {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_office")
 	private Office office;
+
+	public User() {
+
+	}
 
 	public int getDiffDays(String dateTransfer) {
 		Calendar cal = GregorianCalendar.getInstance();
@@ -114,6 +125,97 @@ public class User {
 
 		String numberAccount = String.valueOf(Math.abs(new Random().nextInt())) + "00000000000";
 		return numberAccount.substring(0, 11);
+	}
+
+	private User(UserBuilder userBuilder) {
+		this.id = userBuilder.id;
+		this.name = userBuilder.name;
+		this.email = userBuilder.email;
+		this.password = userBuilder.password;
+		this.nickname = userBuilder.nickname;
+		this.cpf = userBuilder.cpf;
+		this.numberCC = userBuilder.numberCC;
+		this.digitNumberCC = userBuilder.digitNumberCC;
+		this.balance = userBuilder.balance;
+		this.blockedBalance = userBuilder.blockedBalance;
+		this.birthDate = userBuilder.birthDate;
+		this.userActive = userBuilder.userActive;
+
+    }
+	//Joshua Bloch’s
+	public static class UserBuilder {
+		private Long id;
+		private String name;
+		private String email;
+		private String password;
+		private String nickname;
+		private String cpf;
+		private String numberCC;
+		private String digitNumberCC;
+		private BigDecimal balance;
+		private BigDecimal blockedBalance;
+		private Date birthDate;
+		private int userActive;
+
+		public UserBuilder id(Long id) {
+			this.id = id;
+			return this;
+		}
+		public UserBuilder name(String name) {
+			this.name = name;
+			return this;
+		}
+		public UserBuilder email(String email) {
+			this.email = email;
+			return this;
+		}
+		public UserBuilder password(String password) {
+			this.password = password;
+			return this;
+		}
+		public UserBuilder nickname(String nickname) {
+			this.nickname = nickname;
+			return this;
+		}
+		public UserBuilder cpf(String cpf) {
+			this.cpf = cpf;
+			return this;
+		}
+		public UserBuilder numberCC(String numberCC) {
+			this.numberCC = numberCC;
+			return this;
+		}
+		public UserBuilder digitNumberCC(String digitNumberCC) {
+			this.digitNumberCC = digitNumberCC;
+			return this;
+		}
+		public UserBuilder balance(BigDecimal balance) {
+			this.balance = balance;
+			return this;
+		}
+		public UserBuilder blockedBalance(BigDecimal blockedBalance) {
+			this.blockedBalance = blockedBalance;
+			return this;
+		}
+
+		public UserBuilder birthDate(Date birthDate) {
+			this.birthDate = birthDate;
+			return this;
+		}
+		public UserBuilder userActive(int userActive) {
+			this.userActive = userActive;
+			return this;
+		}
+
+//		public UserBuilder(String name, String email, String password) {
+//			this.name = name;
+//			this.email = email;
+//			this.password = password;
+//		}
+
+		public User build() {
+			return new User(this);
+		}
 	}
 
 }

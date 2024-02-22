@@ -1,11 +1,11 @@
 package br.com.back.end.service;
 
+import br.com.back.end.DTO.mapper.UserMapper;
 import br.com.back.end.exception.ResourceNotFoundException;
 import br.com.back.end.model.User;
 import br.com.back.end.model.transactions.HistoryTransactions;
 import br.com.back.end.model.transactions.StatusTransaction;
 import br.com.back.end.repository.HistoryTransactionsRepository;
-import br.com.back.end.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +21,11 @@ public class HistoryTransactionsService {
     
     private final UserService userService;
 
-    public HistoryTransactionsService(HistoryTransactionsRepository historyTransactionsRepository, UserService userService) {
+    private final UserMapper userMapper;
+    public HistoryTransactionsService(HistoryTransactionsRepository historyTransactionsRepository, UserService userService, UserMapper userMapper) {
         this.historyTransactionsRepository = historyTransactionsRepository;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     public List<HistoryTransactions> getAllHistoryTransactions() {
@@ -51,13 +53,11 @@ public class HistoryTransactionsService {
         HistoryTransactions history = historyTransactionsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no such history :" + id + " Confirm the data entered!!"));
 
-//        long idUserO = htDetails.getIdUserCO().getId();
-//        long idUserD = htDetails.getIdUserCD().getId();
         BigDecimal value = htDetails.getValue();
         User userOrigin = new User();
         User userDestination = new User();
-        userOrigin = userService.findIdService(htDetails.getIdUserCO().getId()).getBody();
-        userDestination = userService.findIdService(htDetails.getIdUserCD().getId()).getBody();
+        userOrigin = userMapper.convertDTOToUser(userService.findIdService(htDetails.getIdUserCO().getId()));
+        userDestination = userMapper.convertDTOToUser(userService.findIdService(htDetails.getIdUserCD().getId()));
         if (status.equals(StatusTransaction.PROCESSED)) {
             history.setStatus(StatusTransaction.PROCESSED);
             userDestination.setBalance(userDestination.getBalance().add(value));

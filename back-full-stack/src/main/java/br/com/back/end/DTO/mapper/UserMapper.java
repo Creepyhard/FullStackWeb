@@ -8,6 +8,16 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     public UserDTO convertUserToDTO(User user) {
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getBalance());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getBalance(), user.getPassword(), user.getOldPassword());
+    }
+
+    public User convertDTOToUser(UserDTO userDto) {
+        return new User.UserBuilder()
+                .id(userDto.id())
+                .name(userDto.name())
+                .balance(userDto.balance())
+                .email(userDto.email())
+                .password(userDto.password())
+                .build();
     }
 }

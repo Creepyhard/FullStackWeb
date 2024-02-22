@@ -36,23 +36,19 @@ public class UserService {
 		this.userMapper = userMapper;
 	}
 
-//	public List<User> getAllUsers() {
-//		return userRepository.findAll();
-//	}
-
 	public List<UserDTO> getAllUsers() {
 		return userRepository.findAll().stream().map(userMapper::convertUserToDTO).collect(Collectors.toList());
 	}
-	public User addUserService(User user) {
+	public UserDTO addUserService(User user) {
 		user.setNumberCC(user.getNumberAccount());
 		user.setDigitNumberCC("1");
 		user.setNickname(user.getRandomNickName(user.getName()));
 		user.setPassword(user.getPasswordEncrypt(user.getPassword()));
-		return userRepository.save(user);
+		return userMapper.convertUserToDTO(userRepository.save(user));
 	}
 	
-	public ResponseEntity<User> findIdService(@PathVariable long id) {
-		return userRepository.findById(id).map(record -> ResponseEntity.ok().body(record))
+	public UserDTO findIdService(@PathVariable long id) {
+		return userRepository.findById(id).map(userMapper::convertUserToDTO)
 				.orElseThrow(() -> new ResourceNotFoundException("This id does not exist :" + id));
 	}
 	
@@ -63,30 +59,28 @@ public class UserService {
 		}).orElseThrow(() -> new ResourceNotFoundException("This id does not exist :" + id));
 	}
 	
-	public ResponseEntity<User> attUserService(Long id, User userDetails){
+	public ResponseEntity<UserDTO> attUserService(Long id, UserDTO userDetails){
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("This id does not exist :" + id + " Confirm the entered data!!"));
 
-		BCrypt.Result result = null;
-		String passwordDB = userDetails.getPassword();
-		String oldPassword = userDetails.getOldPassword();
-
-		result = BCrypt.verifyer().verify(oldPassword.toCharArray(), passwordDB);
+		BCrypt.Result result;
+		result = BCrypt.verifyer().verify(userDetails.oldPassword().toCharArray(), user.getPassword());
+		User user1 = userMapper.convertDTOToUser(userDetails);
 
 		if (result.verified) {
-			user.setName(userDetails.getName());
-			user.setPassword(userDetails.getPassword());
-			user.setEmail(userDetails.getEmail());
-			user.setOffice(userDetails.getOffice());
-			user.setBirthDate(userDetails.getBirthDate());
+			user.setName(user1.getName());
+			user.setPassword(user1.getPasswordEncrypt(user1.getPassword()));
+			user.setEmail(user1.getEmail());
+/*			user.setOffice(user1.getOffice());
+			user.setBirthDate(user1.getBirthDate());*/
 			User attUser = userRepository.save(user);
-			return ResponseEntity.ok(attUser);
+			return ResponseEntity.ok(userMapper.convertUserToDTO(attUser));
 		} else {
 			return null;
 		}
 	}
-	
-	public User loginUserService(@RequestBody User user) throws UserNotFoundException {
+
+	public UserDTO loginUserService(@RequestBody User user) throws UserNotFoundException {
 		String emailT = user.getEmail();
 		String passwordT = user.getPassword();
 		User userObject = new User();
@@ -98,7 +92,7 @@ public class UserService {
         if (!result.verified || !userObject.getEmail().equals(emailT)) {
             throw new UserNotFoundException();
         } else {
-            return userObject;
+            return userMapper.convertUserToDTO(userObject);
         }
     }
 
