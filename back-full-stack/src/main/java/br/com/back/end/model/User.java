@@ -105,28 +105,6 @@ public class User {
 		return qtdDays;
 	}
 
-	public String getPasswordEncrypt(String password) {
-		return BCrypt.withDefaults().hashToString(12, password.toCharArray());
-	}
-
-	public String getRandomNickName(String fullName) {
-		String nameUser = "";
-		nameUser = fullName.substring(0,fullName.indexOf(" ")) + String.valueOf(Math.abs(new Random().nextInt()));
-		if(nameUser.length() > 20) {
-			return nameUser.substring(0,20);
-		} else {
-			return nameUser;
-		}
-	}
-
-	public String getNumberAccount() {
-		//temporary method
-		//take the country and region and generate a number for that region, e.g. "Brazil - São Paulo" = 24856 + 6 random numbers + digit account random
-
-		String numberAccount = String.valueOf(Math.abs(new Random().nextInt())) + "00000000000";
-		return numberAccount.substring(0, 11);
-	}
-
 	private User(UserBuilder userBuilder) {
 		this.id = userBuilder.id;
 		this.name = userBuilder.name;
@@ -156,7 +134,33 @@ public class User {
 		private BigDecimal blockedBalance;
 		private Date birthDate;
 		private int userActive;
+		private BigDecimal value;
+		private Date dateTransfer;
+		private String destinationAccount;
+		private String oldPassword;
 
+		public UserBuilder createUser(String name, String email, String password) {
+			this.name = name;
+			this.email = email;
+			this.password = password;
+			return this;
+		}
+
+		public UserBuilder attUser(User user) {
+			this.id = user.id;
+			this.name = user.name;
+			this.email = user.email;
+			this.password = user.password;
+			this.nickname = user.nickname;
+			this.cpf = user.cpf;
+			this.numberCC = user.numberCC;
+			this.digitNumberCC = user.digitNumberCC;
+			this.balance = user.balance;
+			this.blockedBalance = user.blockedBalance;
+			this.birthDate = user.birthDate;
+			this.userActive = user.userActive;
+			return this;
+		}
 		public UserBuilder id(Long id) {
 			this.id = id;
 			return this;
@@ -207,11 +211,21 @@ public class User {
 			return this;
 		}
 
-//		public UserBuilder(String name, String email, String password) {
-//			this.name = name;
-//			this.email = email;
-//			this.password = password;
-//		}
+		public UserBuilder value(BigDecimal value) {
+			this.value = value;
+			return this;
+		}
+		public UserBuilder dateTransfer(Date dateTransfer) {
+			this.dateTransfer = dateTransfer;
+			return this;
+		}public UserBuilder destinationAccount(String destinationAccount) {
+			this.destinationAccount = destinationAccount;
+			return this;
+		}
+		public UserBuilder oldPassword(String oldPassword) {
+			this.oldPassword = oldPassword;
+			return this;
+		}
 
 		public User build() {
 			return new User(this);

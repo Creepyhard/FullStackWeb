@@ -2,7 +2,8 @@ package br.com.back.end.controller;
 
 import java.util.List;
 
-import br.com.back.end.DTO.UserDTO;
+import br.com.back.end.DTO.UserAccountDTO;
+import br.com.back.end.DTO.UserPaymentDTO;
 import br.com.back.end.model.transactions.StatusTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,17 +29,17 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping
-	public List<UserDTO> getUsers() {
+	public List<UserAccountDTO> getUsers() {
 		return userService.getAllUsers();
 	}
 
 	@GetMapping(path = {"/{id}"})
-	public UserDTO getUserId(@PathVariable long id) {
+	public UserAccountDTO getUserId(@PathVariable long id) {
 		return userService.findIdService(id);
 	}
 	
 	@PostMapping
-	public UserDTO addUser(@RequestBody User user) {
+	public UserAccountDTO addUser(@RequestBody UserAccountDTO user) {
 		return userService.addUserService(user);
 	}
 	
@@ -48,17 +49,17 @@ public class UserController {
 	}
 	
 	@PutMapping({"/{id}"})
-	public ResponseEntity<UserDTO> attUser(@PathVariable Long id, @RequestBody UserDTO userDetails){
+	public ResponseEntity<UserAccountDTO> attUser(@PathVariable Long id, @RequestBody UserAccountDTO userDetails){
 		return userService.attUserService(id, userDetails);
 	}
 	
 	@PostMapping(path = {"/{schedulePayment}"})
-	private StatusTransaction schedulePayment(@RequestBody User user) {
+	private StatusTransaction schedulePayment(@RequestBody UserPaymentDTO user) {
 		return userService.schedulePaymentService(user);
 	}
 
 	@PostMapping("/login")
-	private UserDTO loginUserRemote(@RequestBody User user){
+	private UserAccountDTO loginUserRemote(@RequestBody UserAccountDTO user){
 		return userService.loginUserService(user);
 	}
 }

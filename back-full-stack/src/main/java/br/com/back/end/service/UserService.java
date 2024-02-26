@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import br.com.back.end.DTO.UserDTO;
+import br.com.back.end.DTO.UserAccountDTO;
+import br.com.back.end.DTO.UserPaymentDTO;
 import br.com.back.end.DTO.mapper.UserMapper;
 import br.com.back.end.model.transactions.HistoryTransactions;
 import br.com.back.end.model.transactions.StatusTransaction;
@@ -36,19 +37,22 @@ public class UserService {
 		this.userMapper = userMapper;
 	}
 
-	public List<UserDTO> getAllUsers() {
-		return userRepository.findAll().stream().map(userMapper::convertUserToDTO).collect(Collectors.toList());
+	public List<UserAccountDTO> getAllUsers() {
+		return userRepository.findAll().stream().map(userMapper::convertUserToAccountDTO).collect(Collectors.toList());
 	}
-	public UserDTO addUserService(User user) {
-		user.setNumberCC(user.getNumberAccount());
-		user.setDigitNumberCC("1");
-		user.setNickname(user.getRandomNickName(user.getName()));
-		user.setPassword(user.getPasswordEncrypt(user.getPassword()));
-		return userMapper.convertUserToDTO(userRepository.save(user));
+	public UserAccountDTO addUserService(UserAccountDTO userDTO) {
+		User user = new User.UserBuilder()
+						.createUser(userDTO.name(),userDTO.email(),userDTO.password())
+						.numberCC(userDTO.getNumberAccount())
+						.digitNumberCC("1")
+						.nickname(userDTO.getRandomNickName(userDTO.name()))
+						.password(userDTO.getPasswordEncrypt(userDTO.password()))
+						.build();
+		return userMapper.convertUserToAccountDTO(userRepository.save(user));
 	}
 	
-	public UserDTO findIdService(@PathVariable long id) {
-		return userRepository.findById(id).map(userMapper::convertUserToDTO)
+	public UserAccountDTO findIdService(@PathVariable long id) {
+		return userRepository.findById(id).map(userMapper::convertUserToAccountDTO)
 				.orElseThrow(() -> new ResourceNotFoundException("This id does not exist :" + id));
 	}
 	
@@ -59,54 +63,51 @@ public class UserService {
 		}).orElseThrow(() -> new ResourceNotFoundException("This id does not exist :" + id));
 	}
 	
-	public ResponseEntity<UserDTO> attUserService(Long id, UserDTO userDetails){
+	public ResponseEntity<UserAccountDTO> attUserService(Long id, UserAccountDTO userDTODetails){
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("This id does not exist :" + id + " Confirm the entered data!!"));
-
 		BCrypt.Result result;
-		result = BCrypt.verifyer().verify(userDetails.oldPassword().toCharArray(), user.getPassword());
-		User user1 = userMapper.convertDTOToUser(userDetails);
-
+		result = BCrypt.verifyer().verify(userDTODetails.oldPassword().toCharArray(), user.getPassword());
 		if (result.verified) {
-			user.setName(user1.getName());
-			user.setPassword(user1.getPasswordEncrypt(user1.getPassword()));
-			user.setEmail(user1.getEmail());
-/*			user.setOffice(user1.getOffice());
-			user.setBirthDate(user1.getBirthDate());*/
+			user = new User.UserBuilder().attUser(user)
+						.name(userDTODetails.name())
+						.password(userDTODetails.getPasswordEncrypt(userDTODetails.password()))
+						.email(user.getEmail())
+						.build();
 			User attUser = userRepository.save(user);
-			return ResponseEntity.ok(userMapper.convertUserToDTO(attUser));
+			return ResponseEntity.ok(userMapper.convertUserToAccountDTO(attUser));
 		} else {
 			return null;
 		}
 	}
 
-	public UserDTO loginUserService(@RequestBody User user) throws UserNotFoundException {
-		String emailT = user.getEmail();
-		String passwordT = user.getPassword();
+	public UserAccountDTO loginUserService(@RequestBody UserAccountDTO userAccountDTO) throws UserNotFoundException {
+		String emailT = userAccountDTO.email();
+		String passwordT = userAccountDTO.password();
 		User userObject = new User();
 		BCrypt.Result result = null;
 		if(emailT != null && passwordT != null) {
 			userObject = userRepository.findEmailPasswordsTest(emailT);
 			result = BCrypt.verifyer().verify(passwordT.toCharArray(), userObject.getPassword());
 		}
-        if (!result.verified || !userObject.getEmail().equals(emailT)) {
+        if (!result.verified || !userObject.getEmail().equalsIgnoreCase(emailT)) {
             throw new UserNotFoundException();
         } else {
-            return userMapper.convertUserToDTO(userObject);
+            return userMapper.convertUserToAccountDTO(userObject);
         }
     }
 
-	public StatusTransaction schedulePaymentService(User transaction) {
+	public StatusTransaction schedulePaymentService(UserPaymentDTO transaction) {
 		User destionationUser = new User();
 		User userOrigin = new User();
-		BigDecimal value = transaction.getValue();
+		BigDecimal value = transaction.value();
 		BigDecimal totalTax = null;
-		destionationUser = userRepository.returnAccount(transaction.getDestinationAccount());
-		userOrigin = userRepository.returnAccount(transaction.getNumberCC());
+		destionationUser = userRepository.returnAccount(transaction.destinationCC());
+		userOrigin = userRepository.returnAccount(transaction.originCC());
 		if (destionationUser == null) {
 			throw new ResourceNotFoundException("The target account could not be found");
 		}
-		int qtdDays = transaction.getDiffDays(String.valueOf(transaction.getDateTransfer()));
+		int qtdDays = userOrigin.getDiffDays(String.valueOf(transaction.dateTransfer()));
 		BigDecimal balance = userOrigin.getBalance();
 		TaxTransfer txt = new TaxTransfer();
 		txt = userRepository.returnsRateReferentToDay(qtdDays);
@@ -127,7 +128,7 @@ public class UserService {
 				ht.setTax(totalTax);
 				ht.setValue(value);
 				ht.setDateSchedule(ht.getDateSchedule());
-				ht.setDateTransfer(transaction.getDateTransfer());
+				ht.setDateTransfer(transaction.dateTransfer());
 				historyTransactionsRepository.save(ht);
 			} else {
 				throw new ResourceNotFoundException("Insufficient balance");
