@@ -56,8 +56,8 @@ public class HistoryTransactionsService {
         BigDecimal value = htDetails.getValue();
         User userOrigin = new User();
         User userDestination = new User();
-        userOrigin = userMapper.convertDTOToUser(userService.findIdService(htDetails.getIdUserCO().getId()));
-        userDestination = userMapper.convertDTOToUser(userService.findIdService(htDetails.getIdUserCD().getId()));
+        userOrigin = userMapper.convertAccountDTOToUser(userService.findIdService(htDetails.getIdUserCO().getId()));
+        userDestination = userMapper.convertAccountDTOToUser(userService.findIdService(htDetails.getIdUserCD().getId()));
         if (status.equals(StatusTransaction.PROCESSED)) {
             history.setStatus(StatusTransaction.PROCESSED);
             userDestination.setBalance(userDestination.getBalance().add(value));
