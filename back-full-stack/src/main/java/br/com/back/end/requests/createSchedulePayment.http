@@ -2,9 +2,9 @@ POST http://localhost:8080/users/schedulePayment
 Content-Type: application/json
 
 {
-  "id": "4",
-  "numberCC": "50610972300",
-  "destinationAccount": "82631049200",
+  "id": "6",
+  "originCC": "82631049200",
+  "destinationCC": "123123",
   "value": 122,
   "dateTransfer": "2023-03-05"
 }

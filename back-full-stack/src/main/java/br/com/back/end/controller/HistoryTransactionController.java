@@ -32,4 +32,9 @@ public class HistoryTransactionController {
         return historyTransactionsService.addHistoryTransactionsService(ht);
     }
 
+    @PutMapping
+    public ResponseEntity<HistoryTransactions> att(@RequestBody HistoryTransactions ht) {
+        return historyTransactionsService.updateHistoryTransactionsService("", ht.getStatus(), ht);
+    }
+
 }

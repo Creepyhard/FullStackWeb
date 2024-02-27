@@ -1,9 +1,9 @@
-PUT http://localhost:8080/users/4
+PUT http://localhost:8080/users/8
 Content-Type: application/json
 
 {
- "name": "Diego Rodrigues",
-  "email": "nay@gmail.com",
-  "password": "12345678",
-  "oldPassword": "12345679"
+ "name": "Sofia Domingues",
+  "email": "Sofia@gmail.com",
+  "password": "321",
+  "oldPassword": "321"
 }

@@ -1,6 +1,7 @@
 package br.com.back.end.model.transactions;
 
 import br.com.back.end.model.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -32,6 +33,7 @@ public class HistoryTransactions {
     private BigDecimal tax;
 
     @Column
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "pt-BR", timezone = "Brazil/East")
     private Date dateTransfer;
 
     @Column

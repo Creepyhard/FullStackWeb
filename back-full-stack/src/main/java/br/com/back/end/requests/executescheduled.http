@@ -1,0 +1,7 @@
+PUT http://localhost:8080/history
+Content-Type: application/json
+
+{
+  "id": 1,
+  "status": 5
+}
